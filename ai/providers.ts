@@ -41,6 +41,9 @@ export interface ResumeData {
     linkedin?: string;
     website?: string;
   };
+  industry?: string;
+  role?: string;
+  personality?: string;
 }
 
 class OpenAIProvider implements AIProvider {
@@ -101,7 +104,7 @@ Do NOT use external CDNs or frameworks. Make it self-contained.`;
   }
 
   async extractResumeData(resumeText: string): Promise<ResumeData> {
-    const systemPrompt = `Extract structured data from this resume text. Return a JSON object with the exact structure:
+    const systemPrompt = `Extract structured data from this resume text. Also, analyze the content to infer the candidate's industry, primary role, and personality based on the language used. Return a JSON object with the exact structure:
 {
   "name": "Full Name",
   "title": "Professional Title/Role",
@@ -109,7 +112,10 @@ Do NOT use external CDNs or frameworks. Make it self-contained.`;
   "experience": [{"company": "", "role": "", "duration": "", "description": ""}],
   "skills": ["skill1", "skill2"],
   "education": [{"institution": "", "degree": "", "year": ""}],
-  "contact": {"email": "", "phone": "", "linkedin": "", "website": ""}
+  "contact": {"email": "", "phone": "", "linkedin": "", "website": ""},
+  "industry": "Inferred industry (e.g., Technology, Healthcare, Finance)",
+  "role": "Inferred primary role (e.g., Software Engineer, Project Manager, Marketing Specialist)",
+  "personality": "Brief analysis of the candidate's personality based on the tone and language of the cover letter or summary (e.g., 'Driven and results-oriented', 'Creative and collaborative')."
 }`;
 
     const completion = await this.client.chat.completions.create({
@@ -208,7 +214,7 @@ Make it visually stunning and fully responsive.`,
             content: `Extract structured data from this resume and return as JSON:
 ${resumeText}
 
-Format: {"name": "", "title": "", "summary": "", "experience": [], "skills": [], "education": [], "contact": {}}`,
+Format: {"name": "", "title": "", "summary": "", "experience": [], "skills": [], "education": [], "contact": {}, "industry": "", "role": "", "personality": ""}`,
           },
         ],
       }),
@@ -306,7 +312,7 @@ Return JSON with: html, css, js, metadata fields. Make it visually stunning and 
             {
               parts: [
                 {
-                  text: `Extract resume data as JSON: ${resumeText}`,
+                  text: `Extract resume data as JSON: ${resumeText}. Include industry, role, and personality analysis.`,
                 },
               ],
             },

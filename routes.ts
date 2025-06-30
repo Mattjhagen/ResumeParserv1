@@ -7,6 +7,7 @@ import { aiManager } from "./ai/manager";
 import { siteStorage } from "./storage/sites";
 import multer from "multer";
 import passport from "./lib/auth";
+import pdf from "pdf-parse";
 import session from "express-session";
 import MemoryStore from "memorystore";
 
@@ -119,7 +120,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.status(400).json({ message: "Resume file is required" });
         }
 
-        const resumeText = req.file.buffer.toString("utf-8");
+        let resumeText: string;
+        if (req.file.mimetype === "application/pdf") {
+          const data = await pdf(req.file.buffer);
+          resumeText = data.text;
+        } else {
+          resumeText = req.file.buffer.toString("utf-8");
+        }
         const { provider } = req.body;
 
         const resumeData = await aiManager.extractResumeData(
@@ -185,6 +192,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(400).json({
         message: "Failed to set provider",
+        error: error.message,
+      });
+    }
+  });
+
+  app.post("/api/resume/create-portfolio", async (req, res) => {
+    try {
+      const { resumeData, userId } = req.body;
+
+      if (!resumeData || !userId) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      const portfolioSite = await aiManager.generatePortfolioFromResume(resumeData);
+
+      // Generate a unique subdomain
+      const subdomain = `${resumeData.name.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`;
+
+      const storedSite = await siteStorage.createSite({
+        userId,
+        name: `${resumeData.name}'s Portfolio`,
+        subdomain,
+        site: portfolioSite,
+        prompt: "Generated from resume",
+        provider: aiManager.getPrimaryProvider(),
+      });
+
+      res.json({ site: storedSite });
+    } catch (error) {
+      console.error("Portfolio creation error:", error);
+      res.status(500).json({
+        message: "Failed to create portfolio",
         error: error.message,
       });
     }

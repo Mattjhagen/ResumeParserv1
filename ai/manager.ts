@@ -110,24 +110,22 @@ export class AIManager {
   async generatePortfolioFromResume(
     resumeData: ResumeData,
   ): Promise<GeneratedSite> {
-    const prompt = `Create a professional portfolio website for ${resumeData.name}.
+    const prompt = `Create a professional and visually appealing portfolio website for ${resumeData.name}, a ${resumeData.title}.
 
-Profile:
-- Name: ${resumeData.name}
-- Title: ${resumeData.title}
-- Summary: ${resumeData.summary}
+The candidate is in the ${resumeData.industry} industry, and their primary role is ${resumeData.role}. Their personality comes across as ${resumeData.personality}.
 
-Experience:
+Use this information to tailor the site's tone and design. For example, a creative professional might have a more colorful and dynamic site, while a financial analyst might have a more clean and professional design.
+
+Include the following sections:
+- A compelling 'About Me' section based on their summary: ${resumeData.summary}
+- A detailed 'Experience' section:
 ${resumeData.experience.map((exp) => `- ${exp.role} at ${exp.company} (${exp.duration}): ${exp.description}`).join("\n")}
-
-Skills: ${resumeData.skills.join(", ")}
-
-Education:
+- A 'Skills' section highlighting their key abilities: ${resumeData.skills.join(", ")}
+- An 'Education' section:
 ${resumeData.education.map((edu) => `- ${edu.degree} from ${edu.institution} (${edu.year})`).join("\n")}
+- A 'Contact' section with their information: ${resumeData.contact.email}${resumeData.contact.phone ? `, ${resumeData.contact.phone}` : ""}
 
-Contact: ${resumeData.contact.email}${resumeData.contact.phone ? `, ${resumeData.contact.phone}` : ""}
-
-Make it modern, professional, and visually appealing with sections for About, Experience, Skills, Education, and Contact.`;
+Generate a modern, responsive, and professional website that will impress potential employers in the ${resumeData.industry} field.`;
 
     return this.generateSite(prompt);
   }
