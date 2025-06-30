@@ -1,0 +1,18 @@
+// SwiftUI Implementation
+struct PrimaryButton: View {
+  @Environment(\.colorScheme) var colorScheme
+  
+  var body: some View {
+    Button(action: {}) {
+      Text("Generate")
+        .foregroundColor(.white)
+        .padding()
+        .background(
+          colorScheme == .dark ? 
+          Color(hex: "C53A5F") : // Pressed state in dark mode
+          Color(hex: "FF5B7F")   // Default in light
+        )
+        .cornerRadius(12)
+    }
+  }
+}
