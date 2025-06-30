@@ -1,0 +1,25 @@
+// FIGMA VARIABLES (Copy-paste this)
+const vibeColors = {
+  // Brand
+  brandAccent: { light: "#FF5B7F", dark: "#FF6B8F" },
+  brandSuccess: { light: "#5DE794", dark: "#70F0A9" },
+  primaryUI: { light: "#6366F1", dark: "#8183F4" },
+  
+  // Backgrounds
+  background: { light: "#FFFFFF", dark: "#0F172A" },
+  surface: { light: "#F8FAFC", dark: "#1E293B" },
+  
+  // Text
+  textPrimary: { light: "#111827", dark: "#F1F5F9" },
+  textSecondary: { light: "#64748B", dark: "#94A3B8" },
+  
+  // States
+  pressedAccent: { light: "#E04A6F", dark: "#C53A5F" }, // 15% darker
+  disabled: { light: "#E2E8F0", dark: "#334155" }, // 40% opacity
+  error: { light: "#B91C1C", dark: "#F87171" }, // Compliant reds
+  warning: { light: "#F59E0B", dark: "#FCD34D" },
+  info: { light: "#60A5FA", dark: "#93C5FD" },
+  
+  // Borders
+  border: { light: "#E2E8F0", dark: "#334155" }
+}
